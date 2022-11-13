@@ -1,0 +1,8 @@
+﻿<Window x:Class="WaveformVisualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:WaveformVisualizer" 
+        xmlns:views="clr-namespace:WaveformVisualizer.MVVM.Views"
+        Title="Waveform visualizer" Height="450" Width="800">
+    <views:MainView />
+</Window>
