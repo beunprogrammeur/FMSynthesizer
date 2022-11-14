@@ -1,22 +1,19 @@
 ﻿using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
-using System.Linq;
 using System;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using WaveformVisualizer.MVVM.Utilities;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using FMSynthesizer.Waveforms;
-using System.Windows.Threading;
 using LiveChartsCore.Defaults;
-using System.Runtime.ExceptionServices;
 using FMSynthesizer.Envelopes;
+using FMSynthesizer.WPF.Shared.ViewModels;
 
 namespace WaveformVisualizer.MVVM.ViewModels
 {
-    internal class ChartViewModel : ViewModelBase
+    internal class ChartViewModel : BaseViewModel
     {
         private ObservableCollection<ObservableValue> _synthSeries;
         private Timer _timer;

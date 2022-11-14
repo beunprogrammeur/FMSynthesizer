@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WaveformVisualizer.MVVM.Utilities
+﻿namespace FMSynthesizer.WPF.Shared.Utilities
 {
     internal class DisposeStack : IDisposable
     {
@@ -15,7 +12,7 @@ namespace WaveformVisualizer.MVVM.Utilities
         public void Dispose()
         {
             IDisposable? disposable = null;
-            while(_stack.TryPop(out disposable))
+            while (_stack.TryPop(out disposable))
             {
                 disposable.Dispose();
             }

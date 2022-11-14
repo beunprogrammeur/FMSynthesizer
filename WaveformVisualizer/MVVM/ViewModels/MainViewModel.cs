@@ -1,6 +1,8 @@
-﻿namespace WaveformVisualizer.MVVM.ViewModels
+﻿using FMSynthesizer.WPF.Shared.ViewModels;
+
+namespace WaveformVisualizer.MVVM.ViewModels
 {
-    internal class MainViewModel : ViewModelBase
+    internal class MainViewModel : BaseViewModel
     {
         public ChartViewModel ChartViewModel { get; set; } 
         public MainViewModel()

@@ -12,7 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FMSynthesizer.WPF.Shared\FMSynthesizer.WPF.Shared.csproj" />
     <ProjectReference Include="..\FMSynthesizer\FMSynthesizer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MVVM\Models\" />
+    <Folder Include="MVVM\ViewModels\" />
+    <Folder Include="MVVM\Views\" />
   </ItemGroup>
 
 </Project>
