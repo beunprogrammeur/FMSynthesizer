@@ -1,6 +1,6 @@
 ﻿namespace FMSynthesizer
 {
-    public class FMSynthesizer
+    public class FMSynth
     {
 
     }
