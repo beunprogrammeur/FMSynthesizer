@@ -8,12 +8,20 @@ using System.Windows.Input;
 using WaveformVisualizer.MVVM.Utilities;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using FMSynthesizer.Waveforms;
+using System.Windows.Threading;
+using LiveChartsCore.Defaults;
+using System.Runtime.ExceptionServices;
+using FMSynthesizer.Envelopes;
 
 namespace WaveformVisualizer.MVVM.ViewModels
 {
     internal class ChartViewModel : ViewModelBase
     {
-        private ObservableCollection<float> _synthSeries;
+        private ObservableCollection<ObservableValue> _synthSeries;
+        private Timer _timer;
+
+        private const float _sampleRate = 22500.0f;
         public ISeries[] Series { get; set; }
         public Axis[][] Axes { get; }
 
@@ -21,7 +29,12 @@ namespace WaveformVisualizer.MVVM.ViewModels
 
         public ChartViewModel()
         {
-            _synthSeries = new ObservableCollection<float>();
+            _synthSeries = new ObservableCollection<ObservableValue>();
+            for(int i = 0; i < _sampleRate / 2; i++)
+            {
+                _synthSeries.Add(new ObservableValue(0));
+            }
+
             LiveCharts.Configure(config =>
             config.AddSkiaSharp()
             .AddDefaultMappers()
@@ -37,7 +50,7 @@ namespace WaveformVisualizer.MVVM.ViewModels
                         Name = "Time (ms)",
                         NamePaint = new SolidColorPaint(SKColors.Blue),
                         TextSize = 20,
-                        UnitWidth = TimeSpan.FromSeconds(1.0f / 100).Ticks
+                        UnitWidth = TimeSpan.FromSeconds(1.0f / _sampleRate).Ticks
                     }
                 },
 
@@ -49,15 +62,15 @@ namespace WaveformVisualizer.MVVM.ViewModels
                         Name = "Amplitude",
                         NamePaint = new SolidColorPaint(SKColors.Blue),
                         TextSize = 20,
-                        MaxLimit = 1.0f,
-                        MinLimit = -1.0f
+                        MaxLimit = 1.1f,
+                        MinLimit = -1.1f
                     }
                 }
             };
 
             Series = new ISeries[]
             {
-                new LineSeries<float>
+                new LineSeries<ObservableValue>
                 {
                     Values = _synthSeries,
                     Fill = null,
@@ -65,35 +78,39 @@ namespace WaveformVisualizer.MVVM.ViewModels
                     GeometrySize = 0,
                     GeometryFill = null,
                     GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.DarkBlue, 0.5f)
+                    Stroke = new SolidColorPaint(SKColors.DarkBlue, 0.5f),
+                    AnimationsSpeed = TimeSpan.FromMilliseconds(0.1),
                 }      
             };
 
-            ReloadCommand = new RelayCommand(ReloadSeries);
+            const float dt = 1.0f / _sampleRate;
+            float time = 0.0f;
+            int j = 0;
+
+            _timer = new Timer((obj) =>
+            {
+                for(int k = 0; k < _synthSeries.Count / 100; k++)
+                {
+                    j = (j + 1) % (_synthSeries.Count - 1);
+                    _synthSeries[j].Value = NextSample(dt);
+                }
+            }, null, 1500, 1);
+
+
+
+            sine.Frequency = 440.0f;
+            env.Attack  = 0.1f;
+            env.Decay   = 0.1f;
+            env.Sustain = 0.5f;
+            env.Release = 0.2f;
         }
 
-        private void ReloadSeries()
+
+        SineWaveformSource sine = new SineWaveformSource();
+        ADSREnvelope env = new ADSREnvelope();
+        private float NextSample(float dt)
         {
-            // TODO: query the synth, post the results in the series
-
-            _synthSeries.Clear();
-
-            float frequency   = 440.0f;
-            float sample_rate = 44100.0f;
-            float total_time  = 0.1f;
-            float wave_length = 1.0f / frequency;
-            float dt   = 1.0f / sample_rate;
-            float time = 0;
-            
-            float duty_cycle = 0.25f;
-
-            float amplitude = 0.2f;
-            while ((time += dt) < total_time)
-            {
-                float num_waves = time / wave_length;
-                float excess = num_waves - (float)Math.Truncate(num_waves);
-                _synthSeries.Add(amplitude * (excess > 0.25f ? 1.0f : -1.0f));
-            }
+             return sine.NextSample(dt) * env.NextSample(dt);
         }
     }
 }

@@ -10,7 +10,6 @@
     <Folder Include="Algorithms\" />
     <Folder Include="Carriers\" />
     <Folder Include="Modulators\" />
-    <Folder Include="Operators\" />
   </ItemGroup>
 
 </Project>
