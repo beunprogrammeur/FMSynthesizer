@@ -1,6 +1,6 @@
 ﻿namespace FMSynthesizer
 {
-    internal interface ISampleSource
+    public interface ISampleSource
     {
         float NextSample(float dt);
     }

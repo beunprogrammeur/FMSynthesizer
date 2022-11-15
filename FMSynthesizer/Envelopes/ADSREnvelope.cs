@@ -1,6 +1,6 @@
 ﻿namespace FMSynthesizer.Envelopes
 {
-    internal class ADSREnvelope : Envelope
+    public class ADSREnvelope : Envelope
     {
         private float _releasedTime;
         private bool _released;

@@ -1,6 +1,6 @@
 ﻿namespace FMSynthesizer.Envelopes
 {
-    internal interface IEnvelope : ISampleSource
+    public interface IEnvelope : ISampleSource
     {
     }
 }

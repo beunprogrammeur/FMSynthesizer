@@ -1,6 +1,6 @@
 ﻿namespace FMSynthesizer.Waveforms
 {
-    internal abstract class WaveformSource : IWaveformSource
+    public abstract class WaveformSource : IWaveformSource
     {
         public float Phase     { get; set; }
         public float Frequency { get; set; }
