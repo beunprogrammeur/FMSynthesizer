@@ -10,15 +10,12 @@
   <ItemGroup>
     <PackageReference Include="NodeNetwork" Version="6.0.0" />
     <PackageReference Include="NodeNetworkToolkit" Version="6.0.0" />
+    <PackageReference Include="VisioForge.DotNet.Core.TRIAL" Version="15.1.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FMSynthesizer.WPF.Shared\FMSynthesizer.WPF.Shared.csproj" />
     <ProjectReference Include="..\FMSynthesizer\FMSynthesizer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MVVM\Models\" />
   </ItemGroup>
 
 </Project>
