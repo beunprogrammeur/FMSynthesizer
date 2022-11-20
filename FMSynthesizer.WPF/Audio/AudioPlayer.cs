@@ -1,9 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using FMSynthesizer.WPF.SampleSources;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VisioForge.Libs.NAudio.Wave;
 
 namespace FMSynthesizer.WPF.Audio
@@ -11,13 +7,15 @@ namespace FMSynthesizer.WPF.Audio
     public class AudioPlayer : IDisposable
     {
         private WaveOut _waveOut;
-        public AudioPlayer(ISampleSource source)
+        private UniversalWaveProvider _waveProvider;
+        public ITime Time => _waveProvider.Time;
+        public AudioPlayer(SynthesizerState state)
         {
             var waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 1);
             _waveOut = new WaveOut();
 
-
-            _waveOut.Init(new UniversalWaveProvider(source));
+            _waveProvider = new UniversalWaveProvider(state);
+            _waveOut.Init(_waveProvider);
         }
 
         public void Dispose()

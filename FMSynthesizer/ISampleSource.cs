@@ -2,6 +2,6 @@
 {
     public interface ISampleSource
     {
-        float NextSample(float dt);
+        float NextSample();
     }
 }

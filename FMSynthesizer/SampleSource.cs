@@ -1,10 +1,10 @@
-﻿namespace FMSynthesizer.Envelopes
+﻿namespace FMSynthesizer
 {
-    public abstract class Envelope : IEnvelope
+    public abstract class SampleSource : ISampleSource
     {
         protected ITime Time { get; }
 
-        protected Envelope(ITime time)
+        protected SampleSource(ITime time)
         {
             Time = time;
         }

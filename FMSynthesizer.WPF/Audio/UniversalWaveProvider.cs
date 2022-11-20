@@ -1,22 +1,23 @@
-﻿using VisioForge.Libs.NAudio.Wave;
+﻿using FMSynthesizer.WPF.SampleSources;
+using VisioForge.Libs.NAudio.Wave;
 
 namespace FMSynthesizer.WPF.Audio
 {
     internal class UniversalWaveProvider : IWaveProvider
     {
-        private ISampleSource _source;
-
+        private SynthesizerState _state;
+        private TimeInfo _time;
         public WaveFormat WaveFormat { get; private set; }
-
-        public UniversalWaveProvider(ISampleSource source) : this(source, 44100)
+        public ITime Time => _time;
+        public UniversalWaveProvider(SynthesizerState state) : this(state, 44100)
         {
         }
 
-        public UniversalWaveProvider(ISampleSource source, int sampleRate)
+        public UniversalWaveProvider(SynthesizerState state, int sampleRate)
         {
             WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, 1);
-            _source = source;
-
+            _state = state;
+            _time = new TimeInfo() { SampleRate = sampleRate };
         }
 
         public int Read(byte[] buffer, int offset, int count)
@@ -28,7 +29,11 @@ namespace FMSynthesizer.WPF.Audio
 
             for (int i = 0; i < samplesRequired; i++)
             {
-                waveBuffer.FloatBuffer[i] = _source.NextSample(dt);
+                _time.Time += dt;
+
+                // TODO: update all nodes.
+
+                waveBuffer.FloatBuffer[i] = _state.NextSample();
             }
 
             return samplesRequired * sizeof(float);

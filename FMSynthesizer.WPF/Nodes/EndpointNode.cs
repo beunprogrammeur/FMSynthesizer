@@ -1,13 +1,15 @@
 ﻿using FMSynthesizer.WPF.SampleSources;
 using NodeNetwork.Views;
 using ReactiveUI;
+using System;
 
 namespace FMSynthesizer.WPF.Nodes
 {
-    internal class EndpointNode : BaseNode
+    internal class EndpointNode : BaseNode, IRetentionSampleSource
     {
-        private AdapterSampleSource _input;
-        public ISampleSource SampleSource => _input;
+        IRetentionSampleSource? _source;
+        public float RetainedValue => _source?.RetainedValue ?? 0.0f;
+
         static EndpointNode()
         {
             Splat.Locator.CurrentMutable.Register(() => new NodeView(), typeof(IViewFor<EndpointNode>));
@@ -16,8 +18,9 @@ namespace FMSynthesizer.WPF.Nodes
         public EndpointNode()
         {
             Name = "Endpoint";
-            _input = new AdapterSampleSource();
-            AddInput<ISampleSource>("Input", input => _input.Assing(input));
+            AddInput<IRetentionSampleSource>("Input", input => _source = input);
         }
+
+        public float NextSample() => throw new NotImplementedException();
     }
 }

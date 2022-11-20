@@ -10,6 +10,7 @@ using FMSynthesizer.Waveforms;
 using LiveChartsCore.Defaults;
 using FMSynthesizer.Envelopes;
 using FMSynthesizer.WPF.Shared.ViewModels;
+using FMSynthesizer;
 
 namespace WaveformVisualizer.MVVM.ViewModels
 {
@@ -17,6 +18,9 @@ namespace WaveformVisualizer.MVVM.ViewModels
     {
         private ObservableCollection<ObservableValue> _synthSeries;
         private Timer _timer;
+        private TimeInfo _time;
+        SineOscillator _sine; 
+        ADSREnvelope _env;    
 
         private const float _sampleRate = 22500.0f;
         public ISeries[] Series { get; set; }
@@ -31,6 +35,11 @@ namespace WaveformVisualizer.MVVM.ViewModels
             {
                 _synthSeries.Add(new ObservableValue(0));
             }
+
+            _time = new TimeInfo();
+            _sine = new SineOscillator(_time);
+            _env  = new ADSREnvelope(_time);
+
 
             LiveCharts.Configure(config =>
             config.AddSkiaSharp()
@@ -81,7 +90,6 @@ namespace WaveformVisualizer.MVVM.ViewModels
             };
 
             const float dt = 1.0f / _sampleRate;
-            float time = 0.0f;
             int j = 0;
 
             _timer = new Timer((obj) =>
@@ -89,25 +97,23 @@ namespace WaveformVisualizer.MVVM.ViewModels
                 for(int k = 0; k < _synthSeries.Count / 100; k++)
                 {
                     j = (j + 1) % (_synthSeries.Count - 1);
-                    _synthSeries[j].Value = NextSample(dt);
+                    _time.Time += dt;
+                    _synthSeries[j].Value = NextSample();
                 }
             }, null, 1500, 1);
 
 
 
-            sine.Frequency = 440.0f;
-            env.Attack  = 0.1f;
-            env.Decay   = 0.1f;
-            env.Sustain = 0.5f;
-            env.Release = 0.2f;
+            _sine.Frequency = 440.0f;
+            _env.Attack  = 0.1f;
+            _env.Decay   = 0.1f;
+            _env.Sustain = 0.5f;
+            _env.Release = 0.2f;
         }
 
-
-        SineWaveformSource sine = new SineWaveformSource();
-        ADSREnvelope env = new ADSREnvelope();
-        private float NextSample(float dt)
+        private float NextSample()
         {
-             return sine.NextSample(dt) * env.NextSample(dt);
+             return _sine.NextSample() * _env.NextSample();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace FMSynthesizer.Waveforms
 {
-    public interface IWaveformSource : ISampleSource
+    public interface IOscillator : ISampleSource
     {
         /// <summary>
         /// The offset of the starting point of the waveform

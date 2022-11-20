@@ -4,9 +4,11 @@ using ReactiveUI;
 
 namespace FMSynthesizer.WPF.Nodes
 {
-    internal class MuxNode : BaseNode
+    internal class MuxNode : BaseNode, IRetentionSampleSource
     {
-        private MuxSampleSource _source;
+        IRetentionSampleSource _channelA;
+        IRetentionSampleSource _channelB;
+
         static MuxNode()
         {
             Splat.Locator.CurrentMutable.Register(() => new NodeView(), typeof(IViewFor<MuxNode>));
@@ -15,11 +17,19 @@ namespace FMSynthesizer.WPF.Nodes
         public MuxNode()
         {
             Name = "Mux";
-            _source = new MuxSampleSource();
-            AddInput<ISampleSource>("Channel A", source => _source.ChannelA = source);
-            AddInput<ISampleSource>("Channel B", source => _source.ChannelB = source);
 
-            AddOutput<ISampleSource>("Output", _source);
+
+            AddInput<IRetentionSampleSource>("Channel A", source => _channelA = source);
+            AddInput<IRetentionSampleSource>("Channel B", source => _channelB = source);
+
+            AddOutput<IRetentionSampleSource>("Output", this);
+        }
+
+        public float RetainedValue => (_channelA?.RetainedValue ?? 1.0f) * (_channelB?.RetainedValue ?? 1.0f);
+
+        public float NextSample()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
